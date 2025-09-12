@@ -1,0 +1,190 @@
+-- ⚡ NamHub (Rayfield) ⚡
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "⚡ NamHub ⚡",
+   LoadingTitle = "NamHub Loading...",
+   LoadingSubtitle = "by Nam",
+   ConfigurationSaving = {Enabled = false}
+})
+
+local playerTab = Window:CreateTab("Player", 4483362458)
+local miscTab = Window:CreateTab("Misc", 4483362458)
+local evadeTab = Window:CreateTab("Evade", 4483362458) -- 🆕 Tab Evade
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
+local lighting = game:GetService("Lighting")
+
+-- ================================
+-- 🟢 AUTO AIM (thân)
+-- ================================
+local autoAimEnabled = false
+local function getClosestPlayer()
+    local closest, distance = nil, math.huge
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+            local mag = (player.Character.HumanoidRootPart.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+            if mag < distance then
+                distance = mag
+                closest = player
+            end
+        end
+    end
+    return closest
+end
+
+playerTab:CreateToggle({
+    Name = "Auto Aim",
+    CurrentValue = false,
+    Callback = function(Value) autoAimEnabled = Value end
+})
+
+RunService.RenderStepped:Connect(function()
+    if autoAimEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = getClosestPlayer()
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local root = LocalPlayer.Character.HumanoidRootPart
+            local targetPos = Vector3.new(
+                target.Character.HumanoidRootPart.Position.X,
+                root.Position.Y,
+                target.Character.HumanoidRootPart.Position.Z
+            )
+            root.CFrame = CFrame.new(root.Position, targetPos)
+        end
+    end
+end)
+
+-- ================================
+-- 🟢 WALKSPEED
+-- ================================
+playerTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 200},
+    Increment = 1,
+    CurrentValue = 16,
+    Callback = function(Value)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+            LocalPlayer.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = Value
+        end
+    end
+})
+
+-- ================================
+-- 🟢 JUMPPOWER
+-- ================================
+playerTab:CreateSlider({
+    Name = "JumpPower",
+    Range = {50, 300},
+    Increment = 5,
+    CurrentValue = 50,
+    Callback = function(Value)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+            LocalPlayer.Character:FindFirstChildOfClass("Humanoid").JumpPower = Value
+        end
+    end
+})
+
+-- ================================
+-- 🟢 INFINITE JUMP
+-- ================================
+playerTab:CreateToggle({
+    Name = "Infinite Jump",
+    CurrentValue = false,
+    Callback = function(Value)
+        _G.InfJump = Value
+    end
+})
+
+UserInputService.JumpRequest:Connect(function()
+    if _G.InfJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+-- ================================
+-- 🟢 ESP
+-- ================================
+playerTab:CreateToggle({
+    Name = "ESP",
+    CurrentValue = false,
+    Callback = function(Value)
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character then
+                if Value then
+                    if not player.Character:FindFirstChild("NamESP") then
+                        local highlight = Instance.new("Highlight")
+                        highlight.Name = "NamESP"
+                        highlight.FillTransparency = 1
+                        highlight.OutlineColor = Color3.new(1,0,0)
+                        highlight.OutlineTransparency = 0
+                        highlight.Parent = player.Character
+                    end
+                else
+                    if player.Character:FindFirstChild("NamESP") then
+                        player.Character:FindFirstChild("NamESP"):Destroy()
+                    end
+                end
+            end
+        end
+    end
+})
+
+-- ================================
+-- 🟢 SUPA TECH AUTO DASH (Q)
+-- ================================
+local supaTechEnabled = false
+miscTab:CreateToggle({
+    Name = "Supa Tech Auto Dash (Q)",
+    CurrentValue = false,
+    Callback = function(Value)
+        supaTechEnabled = Value
+    end
+})
+
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if not gpe and input.KeyCode == Enum.KeyCode.Q and supaTechEnabled then
+        local target = getClosestPlayer()
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local root = LocalPlayer.Character.HumanoidRootPart
+            local enemyRoot = target.Character.HumanoidRootPart
+            root.CFrame = enemyRoot.CFrame * CFrame.new(0, 0, 3)
+            local bv = Instance.new("BodyVelocity")
+            bv.Velocity = (enemyRoot.Position - root.Position).Unit * 100
+            bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+            bv.Parent = root
+            game.Debris:AddItem(bv, 0.2)
+        end
+    end
+end)
+
+-- ================================
+-- 🟢 FULLBRIGHT
+-- ================================
+miscTab:CreateButton({
+    Name = "FullBright",
+    Callback = function()
+        lighting.Ambient = Color3.new(1, 1, 1)
+        lighting.Brightness = 2
+        lighting.FogEnd = 1e6
+        if lighting:FindFirstChild("ColorCorrection") == nil then
+            local cc = Instance.new("ColorCorrectionEffect")
+            cc.Parent = lighting
+            cc.Brightness = 0.1
+            cc.Contrast = 0.1
+            cc.Saturation = 0.1
+        end
+    end
+})
+
+-- ================================
+-- 🆕 EVADE
+-- ================================
+evadeTab:CreateButton({
+    Name = "Run Evade (Luminary)",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/wrestonbest/Luminary-2025/refs/heads/main/Scripts/Main%20Loader.lua"))()
+    end
+})
