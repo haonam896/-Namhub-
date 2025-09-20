@@ -178,7 +178,21 @@ miscTab:CreateButton({
         end
     end
 })
+-- 🟢 FORSAKEN
+miscTab:CreateButton({
+    Name = "Forsaken",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/MaybeNotMandy/forsaken/refs/heads/main/sae"))()
+    end
+})
 
+-- 🟢 SARYNHUB
+miscTab:CreateButton({
+    Name = "SarynHub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Saiky988/Saryn-Hub/refs/heads/main/Saryn%25Hub%25Beta.lua"))()
+    end
+})
 -- ================================
 -- 🆕 EVADE
 -- ================================
