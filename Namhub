@@ -193,6 +193,12 @@ miscTab:CreateButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Saiky988/Saryn-Hub/refs/heads/main/Saryn%25Hub%25Beta.lua"))()
     end
 })
+miscTab:CreateButton({
+    Name = "Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end
+})
 -- ================================
 -- 🆕 EVADE
 -- ================================
