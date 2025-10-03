@@ -200,6 +200,7 @@ miscTab:CreateButton({
         loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
     end
 })
+miscTab:CreateButton({ Name = "goon", Callback = function()loadstring(game:HttpGet("https://pastefy.app/lawnvcTT/raw", true))()  end })
 -- ================================
 -- EVADE
 -- ================================
