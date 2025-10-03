@@ -11,6 +11,7 @@ local Window = Rayfield:CreateWindow({
 local playerTab = Window:CreateTab("Player", 4483362458)
 local miscTab = Window:CreateTab("Misc", 4483362458)
 local evadeTab = Window:CreateTab("Evade", 4483362458) -- 🆕 Tab Evade
+local day99Tab = Window:CreateTab("99 Day", 4483362458)
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
@@ -211,8 +212,7 @@ evadeTab:CreateButton({
 --=================================
 --🆕 99 day
 --=================================
-local 99dayTab = Window:CreateTab("99 Day", 4483362458)
-99dayTab:CreateButton({
+day99Tab:CreateButton({
     Name = "Nights In The Forest",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))()
